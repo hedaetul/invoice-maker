@@ -3,13 +3,13 @@ export type dataType = {
   billTo: string;
   date: string;
   paymentTerms?: string | undefined;
-  subtotal: string;
+  subtotal: number;
   poNumber?: string;
-  discount?: string;
-  shipping?: string;
-  amountPaid?: string;
+  discount?: number;
+  shipping?: number;
+  amountPaid?: number;
   logo?: string;
-  balanceDue?: string;
+  balanceDue: number;
   currency?: string;
   items: {
     description: string;
