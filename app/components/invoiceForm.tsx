@@ -14,8 +14,8 @@ import ItemList from './itemList';
 
 const itemSchema = z.object({
   description: z.string().min(1, 'Description is required'),
-  quantity: z.number().min(1, 'Quantity must be at least 1'),
-  rate: z.number().min(0, 'Rate must be a positive number'),
+  quantity: z.coerce.number().min(1, 'Quantity must be at least 1'),
+  rate: z.coerce.number().min(0, 'Rate must be a positive number'),
 });
 
 const invoiceSchema = z.object({
@@ -33,15 +33,15 @@ const invoiceSchema = z.object({
   //   .refine((val) => !Number.isNaN(parseInt(val, 10)), {
   //     message: 'Subtotal is required',
   //   }),
-  subtotal: z.coerce .number().min(1,'Subtotal must be greater then 1'),
+  subtotal: z.coerce.number().min(1, 'Subtotal must be greater then 1'),
   //discount: z.number().min(0, 'Discount must be a positive number'),
-  discount: z.coerce .number(),
-  shipping: z.coerce .number(),
+  discount: z.coerce.number(),
+  shipping: z.coerce.number(),
   termsAndConditions: z.string().optional(),
-  amountPaid: z.coerce .number(),
-  balanceDue: z.coerce .number(),
+  amountPaid: z.coerce.number(),
+  balanceDue: z.coerce.number(),
   currency: z.string().optional(),
-}); 
+});
 
 const InvoiceForm: React.FC = () => {
   const { setInvoiceData } = useInvoiceContext();

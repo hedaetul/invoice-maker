@@ -47,7 +47,7 @@ const AdditionalDetails = ({ control, formState }: AdditionalDetailsProps) => {
           <FormItem>
             <FormLabel>Subtotal</FormLabel>
             <FormControl>
-              <Input type='number' placeholder='Subtotal' {...field} />
+              <Input type='number' placeholder='Subtotal'  {...field} />
             </FormControl>
             <FormMessage>{formState.errors.subtotal?.message}</FormMessage>
           </FormItem>
