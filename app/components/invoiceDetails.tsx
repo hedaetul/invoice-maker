@@ -96,7 +96,7 @@ const InvoiceDetails = ({
           <FormItem>
             <FormLabel>PO Number</FormLabel>
             <FormControl>
-              <Input placeholder='PO Number' {...field} />
+              <Input placeholder='01xxxxxxxxx' {...field} />
             </FormControl>
             <FormMessage>{formState.errors.poNumber?.message}</FormMessage>
           </FormItem>

@@ -60,7 +60,7 @@ const AdditionalDetails = ({ control, formState }: AdditionalDetailsProps) => {
           <FormItem>
             <FormLabel>Discount</FormLabel>
             <FormControl>
-              <Input type='number' placeholder='Discount' {...field} />
+              <Input type='number' placeholder='Discount'  {...field} />
             </FormControl>
             <FormMessage>{formState.errors.discount?.message}</FormMessage>
           </FormItem>
@@ -73,7 +73,7 @@ const AdditionalDetails = ({ control, formState }: AdditionalDetailsProps) => {
           <FormItem>
             <FormLabel>Shipping</FormLabel>
             <FormControl>
-              <Input type='number' placeholder='Shipping' {...field} />
+              <Input type='number' placeholder='Shipping charge' {...field} />
             </FormControl>
             <FormMessage>{formState.errors.shipping?.message}</FormMessage>
           </FormItem>

@@ -6,10 +6,10 @@ import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
-import AdditionalDetails from './additionalDetails';
-import InvoiceDetails from './invoiceDetails';
 import { useInvoiceContext } from '../context/invoiceContext';
 import { dataType } from '../types/dataTypes';
+import AdditionalDetails from './additionalDetails';
+import InvoiceDetails from './invoiceDetails';
 import ItemList from './itemList';
 
 const itemSchema = z.object({
@@ -27,23 +27,24 @@ const invoiceSchema = z.object({
   poNumber: z.string().optional(),
   items: z.array(itemSchema),
   notes: z.string().optional(),
-  subtotal: z.string().min(0, 'Subtotal must be a positive number'),
-  discount: z.string().min(0, 'Discount must be a positive number').optional(),
-  shipping: z.string().min(0, 'Shipping must be a positive number').optional(),
+  //subtotal: z.number().min(1, 'Subtotal must be greater than 0'),
+  // subtotal: z
+  //   .string()
+  //   .refine((val) => !Number.isNaN(parseInt(val, 10)), {
+  //     message: 'Subtotal is required',
+  //   }),
+  subtotal: z.coerce .number().min(1,'Subtotal must be greater then 1'),
+  //discount: z.number().min(0, 'Discount must be a positive number'),
+  discount: z.coerce .number(),
+  shipping: z.coerce .number(),
   termsAndConditions: z.string().optional(),
-  amountPaid: z
-    .string()
-    .min(0, 'Amount paid must be a positive number')
-    .optional(),
-  balanceDue: z
-    .string()
-    .min(0, 'Balance due must be a positive number')
-    .optional(),
+  amountPaid: z.coerce .number(),
+  balanceDue: z.coerce .number(),
   currency: z.string().optional(),
-});
+}); 
 
 const InvoiceForm: React.FC = () => {
-  const { setInvoiceData } = useInvoiceContext(); 
+  const { setInvoiceData } = useInvoiceContext();
   const router = useRouter();
 
   const form = useForm({
@@ -57,11 +58,11 @@ const InvoiceForm: React.FC = () => {
       poNumber: '',
       items: [{ description: '', quantity: 1, rate: 0 }],
       notes: '',
-      subtotal: '',
-      discount: '',
-      shipping: '',
-      amountPaid: '',
-      balanceDue: '',
+      subtotal: 0,
+      discount: 0,
+      shipping: 0,
+      amountPaid: 0,
+      balanceDue: 0,
       currency: '',
       termsAndConditions: '',
     },
@@ -75,7 +76,7 @@ const InvoiceForm: React.FC = () => {
 
   // Remove event parameter from onSubmit, let React Hook Form handle it internally
   const onSubmit = (data: dataType) => {
-    setInvoiceData(data); 
+    setInvoiceData(data);
     router.push('/invoice');
   };
 
@@ -91,7 +92,8 @@ const InvoiceForm: React.FC = () => {
           append={append}
         />
         <AdditionalDetails control={control} formState={formState} />
-        <Button type='submit'>Generate Invoice</Button> {/* Removed onClick handler */}
+        <Button type='submit'>Generate Invoice</Button>{' '}
+        {/* Removed onClick handler */}
       </form>
     </Form>
   );
