@@ -1,15 +1,21 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import { Form } from '@/components/ui/form';
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from '@/components/ui/form';
+import { Input } from '@/components/ui/input';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useInvoiceContext } from '../context/invoiceContext';
-import { dataType } from '../types/dataTypes';
-import AdditionalDetails from './additionalDetails';
-import InvoiceDetails from './invoiceDetails';
+import InvoiceFormField from './invoiceFormField';
 import ItemList from './itemList';
 
 const itemSchema = z.object({
@@ -18,8 +24,9 @@ const itemSchema = z.object({
   rate: z.coerce.number().min(0, 'Rate must be a positive number'),
 });
 
+
 const invoiceSchema = z.object({
-  logo: z.string().optional(),
+  logo: z.instanceof(File),
   invoiceNo: z.string().min(1, 'Invoice number is required'),
   billTo: z.string().min(1, 'Bill to is required'),
   date: z.string().min(1, 'Date is required'),
@@ -27,14 +34,7 @@ const invoiceSchema = z.object({
   poNumber: z.string().optional(),
   items: z.array(itemSchema),
   notes: z.string().optional(),
-  //subtotal: z.number().min(1, 'Subtotal must be greater than 0'),
-  // subtotal: z
-  //   .string()
-  //   .refine((val) => !Number.isNaN(parseInt(val, 10)), {
-  //     message: 'Subtotal is required',
-  //   }),
   subtotal: z.coerce.number().min(1, 'Subtotal must be greater then 1'),
-  //discount: z.number().min(0, 'Discount must be a positive number'),
   discount: z.coerce.number(),
   shipping: z.coerce.number(),
   termsAndConditions: z.string().optional(),
@@ -43,14 +43,16 @@ const invoiceSchema = z.object({
   currency: z.string().optional(),
 });
 
+export type invoiceFormValues = z.infer<typeof invoiceSchema>;
+
 const InvoiceForm: React.FC = () => {
   const { setInvoiceData } = useInvoiceContext();
   const router = useRouter();
 
-  const form = useForm({
+  const form = useForm<invoiceFormValues>({
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
-      logo: '',
+      logo: undefined,
       invoiceNo: '',
       billTo: '',
       date: '',
@@ -68,34 +70,160 @@ const InvoiceForm: React.FC = () => {
     },
   });
 
-  const { control, handleSubmit, formState } = form;
+  const { control, formState} = form;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'items',
   });
 
-  // Remove event parameter from onSubmit, let React Hook Form handle it internally
-  const onSubmit = (data: dataType) => {
+  const onSubmit = (data: invoiceFormValues) => {
     setInvoiceData(data);
     router.push('/invoice');
+    console.log(data);
   };
 
   return (
-    <Form {...form}>
-      <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-        <InvoiceDetails control={control} formState={formState} />
-        <ItemList
-          fields={fields}
-          control={control}
-          formState={formState}
-          remove={remove}
-          append={append}
-        />
-        <AdditionalDetails control={control} formState={formState} />
-        <Button type='submit'>Generate Invoice</Button>{' '}
-        {/* Removed onClick handler */}
-      </form>
-    </Form>
+    <div>
+      <Form {...form}>
+        <form onSubmit={form.handleSubmit(onSubmit)}>
+         <FormField
+            control={form.control}
+            name='logo'
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Logo</FormLabel>
+                <FormControl>
+                  <Input
+                    type='file'
+                    accept='image/jpeg, image/png'
+                    onChange={(e) => {
+                      const file = e.target.files?.[0];
+                      field.onChange(file); 
+                    }}
+                  />
+                </FormControl>
+                <FormMessage />
+              </FormItem>
+            )}
+          />
+
+          <InvoiceFormField
+            control={control}
+            type='number'
+            name='invoiceNo'
+            label='InvoiceNo'
+            placeholder='Invoice No.'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='text'
+            name='billTo'
+            label='Bill To'
+            placeholder='Bill To...'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='date'
+            name='date'
+            label='Date'
+            placeholder='Invoice issue date...'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='number'
+            name='poNumber'
+            label='Phone Number'
+            placeholder='Phone Number...'
+            errors={formState.errors}
+          />
+
+          <ItemList
+            fields={fields}
+            control={control}
+            formState={formState}
+            remove={remove}
+            append={append}
+          />
+
+          <InvoiceFormField
+            control={control}
+            type='text'
+            name='notes'
+            label='Notes'
+            placeholder='You can write a notes...'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='number'
+            name='subtotal'
+            label='Subtotal'
+            placeholder='Subtotal'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='number'
+            name='discount'
+            label='Discount'
+            placeholder='Discount...'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='number'
+            name='shipping'
+            label='Shipping charge'
+            placeholder='Shipping charge...'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='number'
+            name='amountPaid'
+            label='Amount Paid'
+            placeholder='Amount already paid...'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='number'
+            name='balanceDue'
+            label='Balance Due'
+            placeholder='Your balance due...'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='text'
+            name='notes'
+            label='Notes'
+            placeholder='You can write a notes...'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='text'
+            name='currency'
+            label='Currency'
+            placeholder='Currency...'
+            errors={formState.errors}
+          />
+          <InvoiceFormField
+            control={control}
+            type='text'
+            name='termsAndConditions'
+            label='Terms And Conditions'
+            placeholder='Terms And Conditions...'
+            errors={formState.errors}
+          />
+          <Button type='submit'>submit</Button>
+        </form>
+      </Form>
+    </div>
   );
 };
 

@@ -12,7 +12,9 @@ const HeroSection = () => {
         <h1 className='text-4xl font-bold mb-4'>
           Welcome to the Invoicer Generator
         </h1>
-        <p className='mt-4 mb-8'>Generate your invoices easily and efficiently.</p>
+        <p className='mt-4 mb-8'>
+          Generate your invoices easily and efficiently.
+        </p>
         <div className='bg-white shadow-md rounded-lg p-6'>
           <h2 className='text-2xl font-semibold mb-4'>Create Your Invoice</h2>
           <InvoiceForm />

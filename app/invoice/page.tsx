@@ -1,10 +1,23 @@
 'use client';
 
 import Image from 'next/image';
+import { useEffect, useState } from 'react';
 import { useInvoiceContext } from '../context/invoiceContext';
 
 const Invoice: React.FC = () => {
   const { invoiceData } = useInvoiceContext();
+  const [logoUrl, setLogoUrl] = useState<string | null>(null);
+
+  useEffect(() => {
+    if (invoiceData?.logo) {
+      const url = URL.createObjectURL(invoiceData.logo);
+      setLogoUrl(url);
+
+      return () => {
+        URL.revokeObjectURL(url);
+      };
+    }
+  }, [invoiceData]);
 
   if (!invoiceData) {
     return (
@@ -17,9 +30,9 @@ const Invoice: React.FC = () => {
   return (
     <div className='max-w-3xl mx-auto p-8 bg-white shadow-lg rounded-lg mt-10'>
       <div className='flex justify-between items-center mb-8'>
-        {invoiceData.logo ? (
+        {logoUrl ? (
           <Image
-            src={invoiceData.logo}
+            src={logoUrl}
             alt='Logo'
             width={100}
             height={100}
@@ -114,7 +127,7 @@ const Invoice: React.FC = () => {
 
       <button
         onClick={() => window.print()}
-        className='bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600'
+        className='hidden-print bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600'
       >
         Print Invoice
       </button>
