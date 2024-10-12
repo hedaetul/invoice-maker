@@ -4,6 +4,7 @@ import './globals.css';
 import { cn } from '@/lib/utils';
 import { InvoiceProvider } from './context/invoiceContext';
 import { link } from 'fs';
+import Head from 'next/head';
 
 const inter = Inter({ subsets: ['latin'] });
 
@@ -21,9 +22,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <head>
+      <Head>
          <link rel="icon" href="/favicon.ico" sizes="xl" />
-      </head>
+      </Head>
       <InvoiceProvider>
         <body className={cn(inter.className)}>
           {children}
