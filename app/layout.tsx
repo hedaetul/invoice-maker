@@ -7,8 +7,8 @@ import { InvoiceProvider } from './context/invoiceContext';
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'invoice-generator',
-  description: 'Generate your invoice here...',
+  title: 'invoice-make',
+  description: 'Transforming bills into brilliance...',
 };
 
 export default function RootLayout({
