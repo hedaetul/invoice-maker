@@ -6,49 +6,57 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
-import { Control, FieldErrors } from 'react-hook-form';
+import { Control } from 'react-hook-form';
 
-interface logoFieldProps {
+interface LogoFieldProps {
   control: Control<any>;
   name: string;
   label: string;
-  placeholder: string;
-  errors: FieldErrors;
+  placeholder?: string;
+  error?: string;
   type: string;
 }
 
-const LogoField = ({
+const LogoField: React.FC<LogoFieldProps> = ({
   control,
-  type,
   name,
   label,
   placeholder,
-  errors
-}: logoFieldProps) => {
+  error,
+  type,
+}) => {
   return (
     <FormField
       control={control}
-      name='logo'
+      name={name}
       render={({ field }) => (
-        <FormItem className='w-full h-full'>
+        <FormItem>
           <FormLabel>{label}</FormLabel>
           <FormControl>
-            <Input
-              className='w-full h-full'
-              name={name}
-              placeholder={placeholder}
-              type={type}
-              accept='image/jpeg, image/png'
-              onChange={(e) => {
-                const file = e.target.files?.[0];
-                field.onChange(file);
-              }}
-            />
+            <div className='border-2 border-dashed h-32 flex justify-center items-center cursor-pointer relative'>
+              <Input
+                id={name}
+                type={type}
+                {...field} // Register the input field with react-hook-form
+                className='absolute opacity-0 cursor-pointer'
+                placeholder={placeholder}
+                onChange={(e) => {
+                  const files = e.target.files;
+                  if (files && files.length > 0) {
+                    field.onChange(files[0]); // Set the first file
+                  } else {
+                    field.onChange(null); // Handle the case where no file is selected
+                  }
+                }}
+              />
+              <span className='text-gray-400'>{placeholder}</span>
+            </div>
           </FormControl>
-          <FormMessage>{errors[name]?.message?.toString() || ''}</FormMessage>
+          <FormMessage>{error}</FormMessage>
         </FormItem>
       )}
     />
   );
 };
+
 export default LogoField;
