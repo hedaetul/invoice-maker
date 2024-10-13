@@ -25,8 +25,8 @@ const ItemList = ({
   formState: any;
 }) => {
   return (
-    <>
-      <h3 className='text-lg font-semibold'>Items</h3>
+    <div className='my-12'>
+      <h3 className='text-2xl font-bold'>Items</h3>
       {fields.map((item: any, index: number) => (
         <div key={item.id} className='flex space-x-2'>
           <FormField
@@ -36,7 +36,7 @@ const ItemList = ({
               <FormItem>
                 <FormLabel>Description</FormLabel>
                 <FormControl>
-                  <Input placeholder='Description' {...field} />
+                  <Input placeholder='Description of item/service' {...field} />
                 </FormControl>
                 <FormMessage>
                   {formState.errors.items?.[index]?.description?.message}
@@ -74,7 +74,7 @@ const ItemList = ({
               </FormItem>
             )}
           />
-          <Button type='button' onClick={() => remove(index)}>
+          <Button variant='destructive' onClick={() => remove(index)}>
             Remove
           </Button>
         </div>
@@ -82,10 +82,11 @@ const ItemList = ({
       <Button
         type='button'
         onClick={() => append({ description: '', quantity: 1, rate: 0 })}
+        className='mt-2'
       >
         + Item
       </Button>
-    </>
+    </div>
   );
 };
 

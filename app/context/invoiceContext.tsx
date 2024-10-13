@@ -1,11 +1,11 @@
 'use client';
 
 import React, { createContext, useContext, useState } from 'react';
-import { invoiceFormValues } from '../components/invoiceForm';
+import { InvoiceFormValues } from '../components/invoiceForm';
 
 interface InvoiceContextProps {
-  invoiceData: invoiceFormValues | null;
-  setInvoiceData: (data: invoiceFormValues) => void;
+  invoiceData: InvoiceFormValues | null;
+  setInvoiceData: (data: InvoiceFormValues) => void;
 }
 
 const InvoiceContext = createContext<InvoiceContextProps | undefined>(
@@ -23,7 +23,7 @@ export const useInvoiceContext = () => {
 export const InvoiceProvider: React.FC<{ children: React.ReactNode }> = ({
   children,
 }) => {
-  const [invoiceData, setInvoiceData] = useState<invoiceFormValues | null>(
+  const [invoiceData, setInvoiceData] = useState<InvoiceFormValues | null>(
     null
   );
 
