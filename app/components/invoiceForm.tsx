@@ -1,5 +1,3 @@
-'use client';
-
 import { Button } from '@/components/ui/button';
 import { Form } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
@@ -7,9 +5,9 @@ import { useRouter } from 'next/navigation';
 import { useFieldArray, useForm } from 'react-hook-form';
 import { z } from 'zod';
 import { useInvoiceContext } from '../context/invoiceContext';
-import InvoiceFormField from './invoiceFormField';
+import InvoiceDetails from './invoiceDetails';
+import InvoiceSummary from './invoiceSummary';
 import ItemList from './itemList';
-import LogoField from './logoField';
 
 const itemSchema = z.object({
   description: z.string().min(1, 'Description is required'),
@@ -18,7 +16,7 @@ const itemSchema = z.object({
 });
 
 const invoiceSchema = z.object({
-  logo: z.instanceof(File),
+  logo: z.instanceof(File).nullable(),
   invoiceNo: z.coerce.number().min(1, 'Invoice number is required'),
   billTo: z.string().min(1, 'Bill to is required'),
   date: z.string().min(1, 'Date is required'),
@@ -26,25 +24,25 @@ const invoiceSchema = z.object({
   poNumber: z.string().optional(),
   items: z.array(itemSchema),
   notes: z.string().optional(),
-  subtotal: z.coerce.number().min(1, 'Subtotal must be greater then 1'),
+  subtotal: z.coerce.number().min(1, 'Subtotal must be greater than 1'),
   discount: z.coerce.number(),
   shipping: z.coerce.number(),
-  termsAndConditions: z.string().optional(),
   amountPaid: z.coerce.number(),
   balanceDue: z.coerce.number(),
   currency: z.string().optional(),
+  termsAndConditions: z.string().optional(),
 });
 
-export type invoiceFormValues = z.infer<typeof invoiceSchema>;
+export type InvoiceFormValues = z.infer<typeof invoiceSchema>;
 
 const InvoiceForm: React.FC = () => {
   const { setInvoiceData } = useInvoiceContext();
   const router = useRouter();
 
-  const form = useForm<invoiceFormValues>({
+  const form = useForm<InvoiceFormValues>({
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
-      logo: undefined,
+      logo: null,
       invoiceNo: 1,
       billTo: '',
       date: '',
@@ -68,7 +66,7 @@ const InvoiceForm: React.FC = () => {
     name: 'items',
   });
 
-  const onSubmit = (data: invoiceFormValues) => {
+  const onSubmit = (data: InvoiceFormValues) => {
     setInvoiceData(data);
     router.push('/invoice');
     console.log(data);
@@ -78,47 +76,7 @@ const InvoiceForm: React.FC = () => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-          <LogoField
-            control={control}
-            type='file'
-            name='logo'
-            label='Logo'
-            placeholder='Select your logo file'
-            errors={formState.errors}
-          />
-
-          <InvoiceFormField
-            control={control}
-            type='number'
-            name='invoiceNo'
-            label='InvoiceNo'
-            placeholder='Invoice No.'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='text'
-            name='billTo'
-            label='Bill To'
-            placeholder='Bill To...'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='date'
-            name='date'
-            label='Date'
-            placeholder='Invoice issue date...'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='number'
-            name='poNumber'
-            label='Phone Number'
-            placeholder='Phone Number...'
-            errors={formState.errors}
-          />
+          <InvoiceDetails control={control} errors={formState.errors} />
 
           <ItemList
             fields={fields}
@@ -128,79 +86,10 @@ const InvoiceForm: React.FC = () => {
             append={append}
           />
 
-          <InvoiceFormField
-            control={control}
-            type='text'
-            name='notes'
-            label='Notes'
-            placeholder='You can write a notes...'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='number'
-            name='subtotal'
-            label='Subtotal'
-            placeholder='Subtotal'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='number'
-            name='discount'
-            label='Discount'
-            placeholder='Discount...'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='number'
-            name='shipping'
-            label='Shipping charge'
-            placeholder='Shipping charge...'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='number'
-            name='amountPaid'
-            label='Amount Paid'
-            placeholder='Amount already paid...'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='number'
-            name='balanceDue'
-            label='Balance Due'
-            placeholder='Your balance due...'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='text'
-            name='notes'
-            label='Notes'
-            placeholder='You can write a notes...'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='text'
-            name='currency'
-            label='Currency'
-            placeholder='Currency...'
-            errors={formState.errors}
-          />
-          <InvoiceFormField
-            control={control}
-            type='text'
-            name='termsAndConditions'
-            label='Terms And Conditions'
-            placeholder='Terms And Conditions...'
-            errors={formState.errors}
-          />
-          <Button type='submit'>submit</Button>
+          <InvoiceSummary control={control} errors={formState.errors} />
+          <div className='w-full flex justify-end items-end mt-4'>
+            <Button type='submit'>Submit</Button>
+          </div>
         </form>
       </Form>
     </div>
