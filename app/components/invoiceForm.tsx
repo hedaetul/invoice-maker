@@ -1,15 +1,7 @@
 'use client';
 
 import { Button } from '@/components/ui/button';
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from '@/components/ui/form';
-import { Input } from '@/components/ui/input';
+import { Form } from '@/components/ui/form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
 import { useFieldArray, useForm } from 'react-hook-form';
@@ -17,6 +9,7 @@ import { z } from 'zod';
 import { useInvoiceContext } from '../context/invoiceContext';
 import InvoiceFormField from './invoiceFormField';
 import ItemList from './itemList';
+import LogoField from './logoField';
 
 const itemSchema = z.object({
   description: z.string().min(1, 'Description is required'),
@@ -24,10 +17,9 @@ const itemSchema = z.object({
   rate: z.coerce.number().min(0, 'Rate must be a positive number'),
 });
 
-
 const invoiceSchema = z.object({
   logo: z.instanceof(File),
-  invoiceNo: z.string().min(1, 'Invoice number is required'),
+  invoiceNo: z.coerce.number().min(1, 'Invoice number is required'),
   billTo: z.string().min(1, 'Bill to is required'),
   date: z.string().min(1, 'Date is required'),
   paymentTerms: z.string().optional(),
@@ -53,7 +45,7 @@ const InvoiceForm: React.FC = () => {
     resolver: zodResolver(invoiceSchema),
     defaultValues: {
       logo: undefined,
-      invoiceNo: '',
+      invoiceNo: 1,
       billTo: '',
       date: '',
       paymentTerms: '',
@@ -70,7 +62,7 @@ const InvoiceForm: React.FC = () => {
     },
   });
 
-  const { control, formState} = form;
+  const { control, formState } = form;
   const { fields, append, remove } = useFieldArray({
     control,
     name: 'items',
@@ -86,25 +78,13 @@ const InvoiceForm: React.FC = () => {
     <div>
       <Form {...form}>
         <form onSubmit={form.handleSubmit(onSubmit)}>
-         <FormField
-            control={form.control}
+          <LogoField
+            control={control}
+            type='file'
             name='logo'
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel>Logo</FormLabel>
-                <FormControl>
-                  <Input
-                    type='file'
-                    accept='image/jpeg, image/png'
-                    onChange={(e) => {
-                      const file = e.target.files?.[0];
-                      field.onChange(file); 
-                    }}
-                  />
-                </FormControl>
-                <FormMessage />
-              </FormItem>
-            )}
+            label='Logo'
+            placeholder='Select your logo file'
+            errors={formState.errors}
           />
 
           <InvoiceFormField
