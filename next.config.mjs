@@ -4,7 +4,7 @@ const nextConfig = {
     remotePatterns: [],
   },
   experimental: {
-    optimizeCss: true,
+    optimizeCss: false, // Disable CSS optimization for now
   },
 };
 
