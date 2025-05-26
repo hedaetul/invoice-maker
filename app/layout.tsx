@@ -1,17 +1,30 @@
+import '@/app/globals.css';
+import { cn } from '@/lib/utils';
 import type { Metadata } from 'next';
 import { Inter } from 'next/font/google';
-import './globals.css';
-import { cn } from '@/lib/utils';
 import { InvoiceProvider } from './context/invoiceContext';
-import Head from 'next/head';
 
 const inter = Inter({ subsets: ['latin'] });
 
 export const metadata: Metadata = {
-  title: 'invoice-make',
+  title: {
+    default: 'Invoice Maker - Create invoices effortlessly',
+    template: '%s | Invoice Maker',
+  },
   description: 'Transforming bills into brilliance...',
-  keywords: 'invoice, billing, finance, invoice maker, invoice generator',
+  keywords: [
+    'invoice',
+    'billing',
+    'finance',
+    'invoice maker',
+    'invoice generator',
+    'invoice creator',
+    'invoice creator',
+  ],
   authors: [{ name: 'Hedaetul Islam', url: 'https://github.com/hedaetul' }],
+  icons: {
+    icon: './favicon.ico',
+  },
 };
 
 export default function RootLayout({
@@ -20,13 +33,10 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang='en'>
-      <Head>
-         <link rel="icon" href="/favicon.ico" sizes="xl" />
-      </Head>
+    <html lang='en' className='scroll-smooth'>
       <InvoiceProvider>
-        <body className={cn(inter.className)}>
-          {children}
+        <body>
+          <main className={cn(inter.className)}>{children}</main>
         </body>
       </InvoiceProvider>
     </html>
