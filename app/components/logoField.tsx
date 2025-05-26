@@ -8,6 +8,7 @@ import {
   FormMessage,
 } from '@/components/ui/form';
 import { Input } from '@/components/ui/input';
+import Image from 'next/image';
 import { useState } from 'react';
 import { Control, FieldErrors } from 'react-hook-form';
 import { RxCross2 } from 'react-icons/rx';
@@ -53,7 +54,7 @@ const LogoField: React.FC<LogoFieldProps> = ({
   };
 
   return (
-    <div className=' h-full w-full'>
+    <div className='h-full w-full'>
       {isImageLink ? (
         <Input type='url' />
       ) : (
@@ -76,11 +77,15 @@ const LogoField: React.FC<LogoFieldProps> = ({
                     }}
                   />
                   {imagePreview ? (
-                    <img
-                      src={imagePreview}
-                      alt='Preview'
-                      className='w-full h-full object-cover'
-                    />
+                    <div className='relative w-full h-full'>
+                      <Image
+                        src={imagePreview}
+                        alt='Preview'
+                        fill
+                        className='object-cover'
+                        unoptimized // Since we're using base64 data URL
+                      />
+                    </div>
                   ) : (
                     <span className='text-gray-400'>{placeholder}</span>
                   )}
