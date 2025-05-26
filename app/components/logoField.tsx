@@ -60,7 +60,7 @@ const LogoField: React.FC<LogoFieldProps> = ({
         <FormField
           control={control}
           name={name}
-          render={({ field }) => (
+          render={({ field }: { field: any }) => (
             <FormItem className='w-full'>
               <FormLabel>{label}</FormLabel>
               <FormControl>
@@ -70,7 +70,7 @@ const LogoField: React.FC<LogoFieldProps> = ({
                     type={type}
                     accept='image/jpeg, image/png'
                     placeholder={placeholder}
-                    onChange={(e) => {
+                    onChange={(e: any) => {
                       const file = e.target.files?.[0] || null;
                       handleImageChange(file, field);
                     }}
